@@ -10,11 +10,11 @@ Built by Brendan Dindial
 
 ## Why this project exists
 
-Anyone who's walked ten minutes to a bike share station only to find it
+Anyone who's walked to a bike share station only to find it
 empty (or full, if you're trying to dock) knows the problem. This app pulls
 Toronto's official live station data and puts it in front of the user in
-under a second — searchable, filterable by neighbourhood, and refreshing
-itself every 30 seconds so the numbers on screen are never stale.
+under a second. It is searchable, filterable by neighborhood, and refreshing
+itself every 30 seconds so the numbers on screen are always accurate.
 
 It also tracks **e-bike availability separately from regular bikes** — a
 detail a lot of simpler trackers skip. As e-bikes have become a bigger part
