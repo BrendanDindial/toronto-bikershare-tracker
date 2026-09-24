@@ -1,0 +1,486 @@
+/* ==========================================================================
+   Design tokens. Same variable system Brendan sent over - keeping it here
+   as CSS custom properties means every color/font/spacing decision lives
+   in one place, and swapping the whole look later is a one-file change
+   instead of hunting through every rule.
+   ========================================================================== */
+:root {
+  --bg: #090b14;
+  --bg-soft: #0d1020;
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-border: rgba(255, 255, 255, 0.09);
+  --panel-border-hover: rgba(254, 255, 254, 0.35);
+
+  --text-hi: #eef0f7;
+  --text-mid: #b7bccd;
+  --text-low: #767c93;
+
+  --lavender: #dbeaec;
+  --cyan: #7dd3fc;
+
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --max: 1120px;
+  --edge: 6vw;
+
+  /* green/amber/red for the availability color coding - defined once here
+     so the card rules and any future legend can both reference them */
+  --ok: #6af7a1;
+  --low: #ffb84d;
+  --full: #ff6b6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text-hi);
+  line-height: 1.5;
+}
+
+/* Reusable "card with a soft border that lights up lavender on hover" -
+   used by the stat boxes and the station cards so they read as one family */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.panel:hover {
+  border-color: var(--panel-border-hover);
+}
+
+/* Small uppercase mono label, used above headings - the same treatment
+   as the "Front-end developer · Toronto, ON" line in the reference */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: #8bfaa9;
+  text-transform: uppercase;
+  margin: 0 0 16px 0;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #5cff3e, var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.85em 1.7em;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Same [hidden]-vs-authored-display bug as .fetch-error above - any class
+   that unconditionally sets `display` on an element JS also hides via the
+   `hidden` attribute will fight with it. Scoping to :not([hidden]) here
+   too so the "Show More Stations" button actually hides when it should. */
+.btn:not([hidden]) {
+  display: inline-block;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #acfa8b, var(--cyan));
+  color: #0a0a14;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-hi);
+  border-color: var(--panel-border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--panel-border-hover);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+header.hero {
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  padding: 60px var(--edge);
+
+  /* Photo by Devine Clayton on Unsplash (unsplash.com/license - free to use) */
+  background-image: url("https://images.unsplash.com/photo-1780886615946-bc008cc88da1?auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Dark gradient over the photo, matching --bg so the hero blends straight
+   into the rest of the page instead of looking like a pasted-on banner */
+header.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(9, 11, 20, 0.55) 0%, rgba(9, 11, 20, 0.75) 55%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(9, 11, 20, 0.85) 0%, rgba(9, 11, 20, 0.35) 60%);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
+  line-height: 1.12;
+  margin: 0;
+  color: var(--text-hi);
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  max-width: 640px;
+  background: var(--panel-border);
+  margin: 28px 0;
+}
+
+.hero .intro {
+  font-size: 1.15rem;
+  color: var(--text-mid);
+  max-width: 560px;
+  font-weight: 300;
+  margin: 0 0 32px 0;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Citywide stats bar
+   ========================================================================== */
+.stats-section {
+  max-width: var(--max);
+  margin: -60px auto 0 auto;
+  padding: 0 var(--edge);
+  position: relative;
+  z-index: 2;
+}
+
+.stats-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.stat {
+  flex: 1 1 160px;
+  padding: 22px 24px;
+  background: var(--bg-soft);
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-hi);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-low);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   Section heading ("Station Availability")
+   ========================================================================== */
+.section-heading {
+  max-width: var(--max);
+  margin: 70px auto 30px auto;
+  padding: 0 var(--edge);
+  text-align: left;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 8px;
+}
+
+.section-heading h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2rem;
+  color: var(--text-hi);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Live status: search/filter controls + station grid
+   ========================================================================== */
+.live-status {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--edge) 80px var(--edge);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#station-search,
+#neighbourhood-filter {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 12px 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--text-hi);
+  transition: border-color 0.2s ease;
+}
+
+#station-search {
+  flex: 1 1 280px;
+}
+
+#station-search::placeholder {
+  color: var(--text-low);
+}
+
+#station-search:focus,
+#neighbourhood-filter:focus {
+  outline: none;
+  border-color: var(--lavender);
+}
+
+#neighbourhood-filter {
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.last-updated {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-low);
+  margin: 0 0 30px 0;
+}
+
+.fetch-error {
+  font-family: var(--font-body);
+  color: #ffb4b4;
+  background-color: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  border-radius: 10px;
+  padding: 12px 18px;
+  max-width: 500px;
+  margin: 0 0 24px 0;
+}
+
+/* This is the fix for the "error never goes away" bug: `display: inline-block`
+   used to be set unconditionally, which overrode the browser's default
+   `[hidden] { display: none }` rule (same CSS specificity, and this rule
+   loads after the browser's, so it was winning). The JS was correctly
+   toggling the hidden attribute the whole time - the CSS just never let it
+   matter. Scoping the display rule to :not([hidden]) fixes it. */
+.fetch-error:not([hidden]) {
+  display: block;
+}
+
+/* ==========================================================================
+   Station cards
+   ========================================================================== */
+.stations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  font-size: 1.05rem;
+  color: var(--text-low);
+  padding: 50px 0;
+  text-align: center;
+}
+
+.station-card {
+  padding: 22px;
+  /* left accent bar - color set per availability state below, this is
+     the neutral default before JS assigns a state class */
+  border-left: 3px solid var(--panel-border);
+}
+
+.station-card:hover {
+  transform: translateY(-3px);
+}
+
+.station-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-hi);
+  margin: 0 0 6px 0;
+}
+
+.neighbourhood-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-low);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 14px 0;
+}
+
+.station-card .counts {
+  font-size: 1.05rem;
+  color: var(--text-hi);
+  margin: 0 0 2px 0;
+}
+
+.station-card .counts-sub {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-mid);
+  margin: 0 0 14px 0;
+}
+
+.total-spots {
+  color: var(--text-low);
+  font-size: 0.85em;
+}
+
+/* the little "X open docks" pill */
+.status {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  background: var(--bg-soft);
+  border: 1px solid var(--panel-border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.live-time {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-low);
+  margin: 10px 0 0 0;
+}
+
+/* Availability color coding - a left accent bar + colored count instead
+   of the old heavy neon glow, quieter and easier to scan at a glance */
+.station-card.available {
+  border-left-color: var(--ok);
+}
+
+.station-card.available .counts strong {
+  color: var(--ok);
+}
+
+.station-card.low {
+  border-left-color: var(--low);
+}
+
+.station-card.low .counts strong {
+  color: var(--low);
+}
+
+.station-card.full {
+  border-left-color: var(--full);
+}
+
+.station-card.full .counts strong {
+  color: var(--full);
+}
+
+.load-more-wrap {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+footer {
+  text-align: center;
+  color: var(--text-low);
+  font-size: 0.85rem;
+  padding: 30px var(--edge) 50px var(--edge);
+}
+
+footer p {
+  margin: 4px 0;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+  header.hero {
+    min-height: 460px;
+    padding: 40px var(--edge);
+  }
+
+  .stats-section {
+    margin-top: -40px;
+  }
+
+  .stat {
+    flex: 1 1 45%;
+  }
+
+  .section-heading h2 {
+    font-size: 1.6rem;
+  }
+
+  .stations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    text-align: center;
+  }
+}
