@@ -119,4 +119,4 @@ Netlify, or any static host.
 
 ---
 
-© Brendan Dindial — Computer Programming student, Humber College
+© Brendan Dindial
