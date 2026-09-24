@@ -4,7 +4,7 @@ A real-time dashboard for Bike Share Toronto that shows live bike, **e-bike**,
 and dock availability across the entire city — built in React and powered
 directly by the city's public GBFS data feed.
 
-**[Live Demo](#)** &nbsp;·&nbsp; **[Report a Bug](#)** &nbsp;·&nbsp; Built by Brendan Dindial
+&nbsp;·&nbsp; Built by Brendan Dindial
 
 ---
 
